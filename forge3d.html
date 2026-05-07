@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forge 3D – Conception mécanique</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --iron: #131320;
+    --steel: #1e1e28;
+    --forge: #e05c3a;
+    --ember: #f07050;
+    --alloy: #a0a4bc;
+    --light: #f0f0f8;
+    --wire: #2e2e3e;
+    --white: #ffffff;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--iron);
+    color: var(--light);
+    overflow-x: hidden;
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: rgba(18,18,26,0.95);
+    border-bottom: 1px solid var(--wire);
+    backdrop-filter: blur(8px);
+  }
+  .logo {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.6rem; font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--white);
+  }
+  .logo span { color: var(--forge); }
+  nav ul { display: flex; gap: 2rem; list-style: none; }
+  nav ul a {
+    font-size: 0.85rem; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: #c0c4d8; text-decoration: none;
+    transition: color 0.2s;
+  }
+  nav ul a:hover { color: var(--white); }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 8rem 3rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(224,92,58,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(224,92,58,0.08) 1px, transparent 1px);
+    animation: gridShift 20s linear infinite;
+  }
+  @keyframes gridShift {
+    from { background-position: 0 0; }
+    to { background-position: 60px 60px; }
+  }
+
+  .hero-accent {
+    position: absolute; right: -80px; top: 50%;
+    transform: translateY(-50%);
+    width: 500px; height: 500px;
+    border: 1px solid rgba(224,92,58,0.25);
+    border-radius: 50%;
+    animation: rotate 30s linear infinite;
+  }
+  .hero-accent::before {
+    content: '';
+    position: absolute; inset: 40px;
+    border: 1px solid rgba(224,92,58,0.15);
+    border-radius: 50%;
+  }
+  .hero-accent::after {
+    content: '';
+    position: absolute; inset: 80px;
+    border: 1px solid rgba(224,92,58,0.08);
+    border-radius: 50%;
+  }
+  @keyframes rotate {
+    from { transform: translateY(-50%) rotate(0deg); }
+    to { transform: translateY(-50%) rotate(360deg); }
+  }
+
+  .hero-eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.88rem; color: var(--forge);
+    letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0; animation: fadeUp 0.6s 0.2s forwards;
+  }
+  .hero-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    max-width: 700px;
+    color: var(--white);
+    opacity: 0; animation: fadeUp 0.6s 0.4s forwards;
+  }
+  .hero-title span { color: var(--forge); }
+
+  .hero-slogan {
+    margin-top: 1.5rem;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.5rem; font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.05em;
+    border-left: 3px solid var(--forge);
+    padding-left: 1rem;
+    opacity: 0; animation: fadeUp 0.6s 0.55s forwards;
+  }
+
+  .hero-subtitle {
+    font-size: 1.05rem; font-weight: 300;
+    color: #c0c4d8;
+    max-width: 500px;
+    margin-top: 1.5rem;
+    line-height: 1.75;
+    opacity: 0; animation: fadeUp 0.6s 0.7s forwards;
+  }
+  .hero-cta {
+    display: flex; gap: 1rem; margin-top: 2.5rem;
+    opacity: 0; animation: fadeUp 0.6s 0.85s forwards;
+  }
+  #hero .hero-eyebrow,
+	#hero .hero-title,
+	#hero .hero-slogan,
+	#hero .hero-subtitle,
+	#hero .hero-cta,
+	#hero .hero-stats {
+	  position: relative;
+	  z-index: 3;
+	  max-width: 50%;
+	}
+  .hero-image {
+	  position: absolute;
+	  right: 0;
+	  transform: translateY(-45%);
+	  width: clamp(420px, 48vw, 650px);
+	  opacity: 0;
+	  animation: fadeUp 0.8s 0.6s forwards;
+	  z-index: 2;
+	  pointer-events: none;
+	}
+
+	.hero-image img {
+	  width: 100%;
+	  height: auto;
+	  display: block;
+	  /* Supprime le fond blanc de l'image */
+	  mix-blend-mode: lighten;
+	}
+	
+  .btn-primary {
+    padding: 0.85rem 2rem;
+    background: var(--forge);
+    color: var(--white); border: none; cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.95rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    transition: background 0.2s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--ember); }
+  .btn-outline {
+    padding: 0.85rem 2rem;
+    background: transparent;
+    color: var(--white);
+    border: 1px solid #4a4a60;
+    cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.95rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    transition: border-color 0.2s, color 0.2s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-outline:hover { border-color: var(--forge); color: var(--forge); }
+
+  .hero-stats {
+    display: flex; gap: 3rem; margin-top: 4rem;
+    opacity: 0; animation: fadeUp 0.6s 1s forwards;
+  }
+  .stat-val {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 2rem; font-weight: 700; color: var(--white);
+  }
+  .stat-val span { color: var(--forge); }
+  .stat-label {
+    font-size: 0.78rem; font-weight: 500;
+    color: #a0a4bc; letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTION BASE */
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.78rem; color: var(--forge);
+    letter-spacing: 0.25em; text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+  .section-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700; color: var(--white);
+    margin-bottom: 1rem;
+  }
+  .section-body {
+    font-size: 1rem; font-weight: 300;
+    color: #c0c4d8; line-height: 1.8;
+    max-width: 560px;
+  }
+  .divider {
+    width: 40px; height: 2px;
+    background: var(--forge);
+    margin-bottom: 1.5rem;
+  }
+
+  /* ABOUT */
+  #about {
+    padding: 6rem 3rem;
+    background: var(--steel);
+    border-top: 1px solid var(--wire);
+    border-bottom: 1px solid var(--wire);
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: center;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .about-visual {
+    position: relative;
+    aspect-ratio: 1;
+    max-width: 380px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hex-frame {
+	  width: 100%;
+	  height: 100%;
+	  border: 1px solid #3a3a50;
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+	  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+	  background: #16161f;
+	  overflow: hidden;
+	}
+
+	.hex-frame img {
+	  width: 95%;
+	  height: 95%;
+	  object-fit: cover;
+	  mix-blend-mode: lighten; /* supprime le fond blanc */
+	  transform: scale(1.05);
+	}
+  .hex-inner {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 4.5rem; font-weight: 700;
+    color: var(--forge); opacity: 0.25;
+    letter-spacing: -0.05em;
+  }
+  .about-tag {
+    position: absolute;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem; color: #c0c4d8;
+    letter-spacing: 0.15em;
+    background: var(--steel);
+    padding: 4px 10px;
+    border: 1px solid var(--wire);
+  }
+  .tag-tl { top: 20%; left: -80px; }
+  .tag-br { bottom: 20%; right: -80px; }
+
+  /* SERVICES */
+  #services { padding: 6rem 3rem; }
+  .services-wrap { max-width: 1100px; margin: 0 auto; }
+  .services-header { margin-bottom: 3rem; }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--wire);
+    border: 1px solid var(--wire);
+  }
+  .service-card {
+    background: var(--iron);
+    padding: 2.5rem 2rem;
+    position: relative;
+    transition: background 0.2s;
+    cursor: default;
+  }
+  .service-card:hover { background: var(--steel); }
+  .service-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--forge);
+    transition: width 0.3s;
+  }
+  .service-card:hover::before { width: 100%; }
+  .service-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem; color: var(--forge);
+    letter-spacing: 0.2em; margin-bottom: 1.5rem;
+  }
+  .service-icon {
+    font-size: 1.8rem; margin-bottom: 0.8rem;
+    display: block; color: var(--forge);
+  }
+  .service-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.2rem; font-weight: 700;
+    color: var(--white); margin-bottom: 0.75rem;
+  }
+  .service-desc {
+    font-size: 0.9rem; font-weight: 300;
+    color: #c0c4d8; line-height: 1.75;
+  }
+
+  /* TOOLS */
+  #tools {
+    background: var(--steel);
+    border-top: 1px solid var(--wire);
+    padding: 6rem 3rem;
+  }
+  .tools-inner { max-width: 1100px; margin: 0 auto; }
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem; margin-top: 2.5rem;
+  }
+  .tool-chip {
+    border: 1px solid #3a3a50;
+    padding: 1.4rem 1.5rem;
+    background: var(--iron);
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .tool-chip:hover { border-color: var(--forge); background: #16161f; }
+  .tool-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.15rem; font-weight: 700;
+    color: var(--white);
+  }
+  .tool-type {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem; color: #a0a4bc;
+    letter-spacing: 0.08em; margin-top: 6px;
+  }
+
+  /* CONTACT */
+  #contact {
+    background: var(--iron);
+    border-top: 1px solid var(--wire);
+    padding: 6rem 3rem;
+  }
+  .contact-inner {
+    max-width: 700px; margin: 0 auto;
+    text-align: center;
+  }
+  .contact-inner .section-label { display: block; }
+  .contact-inner .divider { margin: 1.5rem auto; }
+  .contact-inner .section-body { margin: 0 auto; }
+  .contact-email {
+    display: inline-block;
+    margin-top: 2rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1rem; color: var(--forge);
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(224,92,58,0.4);
+    padding-bottom: 4px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .contact-email:hover { color: var(--ember); border-color: var(--ember); }
+  .contact-cta { margin-top: 2.5rem; }
+
+    footer {
+    background: var(--steel);
+    border-top: 1px solid var(--wire);
+    padding: 2rem 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-logo {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem; font-weight: 700;
+    color: #a0a4bc;
+  }
+  .footer-logo span { color: var(--forge); }
+  .footer-copy {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem; color: #5a5a70;
+    letter-spacing: 0.1em;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">FORGE<span>3D</span></div>
+  <ul>
+    <li><a href="#about">À propos</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#tools">Outils</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-accent"></div>
+  <div class="hero-image">
+	  <img src="hero-forge3d.png" alt="Forge 3D illustration">
+  </div>
+  <div class="hero-eyebrow">// Concepteur mécanique indépendant</div>
+  <h1 class="hero-title">Conception <span>mécanique</span><br>de précision.</h1>
+  <div class="hero-slogan">« La conception inspirée de la nature »</div>
+  <p class="hero-subtitle">Conception 3D, fabrication assistée par ordinateur et prototypage au service de vos projets industriels les plus ambitieux.</p>
+  <div class="hero-cta">
+    <a href="#services" class="btn-primary">Voir les services</a>
+    <a href="#contact" class="btn-outline">Demander un devis</a>
+  </div>
+  <div class="hero-stats">
+    <div>
+      <div class="stat-val">CAO<span>.</span></div>
+      <div class="stat-label">Conception avancée</div>
+    </div>
+    <div>
+      <div class="stat-val">FAO<span>.</span></div>
+      <div class="stat-label">Fabrication numérique</div>
+    </div>
+    <div>
+      <div class="stat-val">RE<span>.</span></div>
+      <div class="stat-label">Reverse engineering</div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="about-grid">
+    <div>
+      <div class="section-label">// 01 – À propos</div>
+      <div class="divider"></div>
+      <h2 class="section-title">Forge 3D</h2>
+      <p class="section-body">Bureau d'études indépendant spécialisé en conception mécanique 3D et fabrication assistée par ordinateur. Chaque projet est abordé avec une approche biomimétique : des solutions robustes, légères et efficaces, directement inspirées des structures que la nature a perfectionnées au fil des millénaires.</p>
+      <p class="section-body" style="margin-top:1.2rem;">De l'esquisse à la pièce finale, Forge 3D accompagne artisans, PME et industriels à chaque étape de leur développement produit.</p>
+    </div>
+    <div class="about-visual">
+	  <div class="hex-frame">
+		  <img src="piece-mecanique.jpeg" alt="Pièce mécanique Forge 3D">
+		</div>
+      <div class="about-tag tag-tl">// Biomimétisme</div>
+      <div class="about-tag tag-br">// Précision</div>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="services-wrap">
+    <div class="services-header">
+      <div class="section-label">// 02 – Services</div>
+      <div class="divider"></div>
+      <h2 class="section-title">Ce que je propose</h2>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-num">SVC-001</div>
+        <div class="service-icon">◈</div>
+        <div class="service-name">Conception 3D / CAO</div>
+        <p class="service-desc">Modélisation de pièces et assemblages mécaniques complexes. Mise en plan, tolérancement et liasses techniques selon vos standards.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-num">SVC-002</div>
+        <div class="service-icon">◉</div>
+        <div class="service-name">Impression 3D</div>
+        <p class="service-desc">Production rapide de pièces fonctionnelles ou de prototypes par impression additive. Conseil sur le choix des matériaux et procédés.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-num">SVC-003</div>
+        <div class="service-icon">◫</div>
+        <div class="service-name">Usinage CNC</div>
+        <p class="service-desc">Programmation et préparation des fichiers pour usinage numérique. Optimisation des parcours d'outils pour une production efficace.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-num">SVC-004</div>
+        <div class="service-icon">◬</div>
+        <div class="service-name">Prototypage rapide</div>
+        <p class="service-desc">Du concept au prototype physique en un temps réduit. Itérations rapides pour valider vos idées avant la mise en production.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-num">SVC-005</div>
+        <div class="service-icon">◍</div>
+        <div class="service-name">Reverse Engineering</div>
+        <p class="service-desc">Numérisation et reconstruction de pièces existantes sans plans. Idéal pour la pièce de rechange, l'adaptation ou l'optimisation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tools">
+  <div class="tools-inner">
+    <div class="section-label">// 03 – Outils maîtrisés</div>
+    <div class="divider"></div>
+    <h2 class="section-title">Stack technique</h2>
+    <div class="tools-grid">
+      <div class="tool-chip">
+        <div class="tool-name">SolidWorks</div>
+        <div class="tool-type">CAO / Mise en plan</div>
+      </div>
+      <div class="tool-chip">
+        <div class="tool-name">PTC Creo</div>
+        <div class="tool-type">CAO paramétrique</div>
+      </div>
+      <div class="tool-chip">
+        <div class="tool-name">AutoCAD</div>
+        <div class="tool-type">Dessin technique 2D</div>
+      </div>
+      <div class="tool-chip">
+        <div class="tool-name">Blender</div>
+        <div class="tool-type">Modélisation / Rendu</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="contact-inner">
+    <div class="section-label">// 04 – Contact</div>
+    <div class="divider"></div>
+    <h2 class="section-title">Parlons de votre projet</h2>
+    <p class="section-body">Un projet, une question, un devis ? Envoyez-moi un message directement par e-mail. Je reviens vers vous sous 48h.</p>
+    <div class="contact-cta">
+      <a href="mailto:paclairet.forge3d@gmail.com" class="contact-email">paclairet.forge3d@gmail.com</a>
+      <br><br>
+      <a href="mailto:paclairet.forge3d@gmail.com" class="btn-primary">Envoyer un message</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">FORGE<span>3D</span></div>
+  <div class="footer-copy">© 2026 – Forge 3D – Tous droits réservés</div>
+</footer>
+
+</body>
+</html>
