@@ -1,0 +1,625 @@
+ /* styles.css */
+
+ *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --iron:   #12121a;
+    --steel:  #1e1e28;
+    --forge:  #e05c3a;
+    --alloy:  #a0a4bc;
+    --light:  #f0f0f8;
+    --wire:   #2e2e3e;
+    --white:  #ffffff;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: #131320;
+    color: var(--light);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: rgba(18,18,26,0.96);
+    border-bottom: 1px solid var(--wire);
+    backdrop-filter: blur(8px);
+  }
+  .logo {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.6rem; font-weight: 700;
+    letter-spacing: 0.1em; color: var(--white);
+  }
+  .logo span { color: var(--forge); }
+  .nav-right { display: flex; align-items: center; gap: 2rem; }
+  nav ul { display: flex; gap: 2rem; list-style: none; }
+  nav ul a {
+    font-size: 0.85rem; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: #c0c4d8; text-decoration: none;
+    transition: color 0.2s;
+  }
+  nav ul a:hover { color: var(--white); }
+
+  .lang-switcher { display: flex; border: 1px solid var(--wire); }
+  .lang-btn {
+    background: transparent; color: #c0c4d8; border: none;
+    padding: 0.4rem 0.7rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem; letter-spacing: 0.1em;
+    cursor: pointer; transition: background 0.2s, color 0.2s;
+  }
+  .lang-btn:hover { color: var(--white); }
+  .lang-btn.active { background: var(--forge); color: var(--white); }
+
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 8rem 3rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  @keyframes gridShift {
+    from { background-position: 0 0; }
+    to { background-position: 60px 60px; }
+  }
+
+  .hero-accent {
+    position: absolute; right: -80px; top: 50%;
+    transform: translateY(-50%);
+    width: 500px; height: 500px;
+    border: 1px solid rgba(224,92,58,0.25);
+    border-radius: 50%;
+    animation: rotate 30s linear infinite;
+  }
+  .hero-accent::before {
+    content: '';
+    position: absolute; inset: 40px;
+    border: 1px solid rgba(224,92,58,0.15);
+    border-radius: 50%;
+  }
+  .hero-accent::after {
+    content: '';
+    position: absolute; inset: 80px;
+    border: 1px solid rgba(224,92,58,0.08);
+    border-radius: 50%;
+  }
+  @keyframes rotate {
+    from { transform: translateY(-50%) rotate(0deg); }
+    to { transform: translateY(-50%) rotate(360deg); }
+  }
+
+  .hero-eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.88rem; color: var(--forge);
+    letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0; animation: fadeUp 0.6s 0.2s forwards;
+  }
+  .hero-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    max-width: 700px;
+    color: var(--white);
+    opacity: 0; animation: fadeUp 0.6s 0.4s forwards;
+  }
+  .hero-title span { color: var(--forge); }
+
+  .hero-slogan {
+    margin-top: 1.5rem;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.5rem; font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.05em;
+    border-left: 3px solid var(--forge);
+    padding-left: 1rem;
+    opacity: 0; animation: fadeUp 0.6s 0.55s forwards;
+  }
+
+  .hero-subtitle {
+    font-size: 1.05rem; font-weight: 300;
+    color: #c0c4d8;
+    max-width: 500px;
+    margin-top: 1.5rem;
+    line-height: 1.75;
+    opacity: 0; animation: fadeUp 0.6s 0.7s forwards;
+  }
+  .hero-cta {
+    display: flex; gap: 1rem; margin-top: 2.5rem;
+    opacity: 0; animation: fadeUp 0.6s 0.85s forwards;
+  }
+  .hero-image {
+	  position: absolute;
+	  right: 0;
+	  transform: translateY(-45%);
+	  width: clamp(420px, 48vw, 650px);
+	  opacity: 0;
+	  animation: fadeUp 0.8s 0.6s forwards;
+	  z-index: 2;
+	  pointer-events: none;
+	}
+
+	.hero-image img {
+	  width: 100%;
+	  height: auto;
+	  display: block;
+	  /* Supprime le fond blanc de l'image */
+	  mix-blend-mode: lighten;
+	}
+  .btn-primary {
+    padding: 0.85rem 2rem;
+    background: var(--forge);
+    color: var(--white); border: none; cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.95rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    transition: background 0.2s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--ember); }
+  .btn-outline {
+    padding: 0.85rem 2rem;
+    background: transparent;
+    color: var(--white);
+    border: 1px solid #4a4a60;
+    cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.95rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    transition: border-color 0.2s, color 0.2s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-outline:hover { border-color: var(--forge); color: var(--forge); }
+
+  .hero-stats {
+    display: flex; gap: 3rem; margin-top: 4rem;
+    opacity: 0; animation: fadeUp 0.6s 1s forwards;
+  }
+  .stat-val {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 2rem; font-weight: 700; color: var(--white);
+  }
+  .stat-val span { color: var(--forge); }
+  .stat-label {
+    font-size: 0.78rem; font-weight: 500;
+    color: #a0a4bc; letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTION BASE */
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.78rem; color: var(--forge);
+    letter-spacing: 0.25em; text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+  .section-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700; color: var(--white);
+    margin-bottom: 1rem;
+  }
+  .section-body {
+    font-size: 1rem; font-weight: 300;
+    color: #c0c4d8; line-height: 1.8;
+    max-width: 560px;
+  }
+  .divider {
+    width: 40px; height: 2px;
+    background: var(--forge);
+    margin-bottom: 1.5rem;
+  }
+
+  /* ABOUT */
+  #about {
+    padding: 6rem 3rem;
+    background: var(--steel);
+    border-top: 1px solid var(--wire);
+    border-bottom: 1px solid var(--wire);
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: center;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .about-visual {
+    position: relative;
+    aspect-ratio: 1;
+    max-width: 380px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hex-frame {
+    width: 100%; height: 100%;
+    border: 1px solid #3a3a50;
+    display: flex; align-items: center; justify-content: center;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    background: #16161f;
+  }
+  	.hex-frame img {
+	  width: 95%;
+	  height: 95%;
+	  object-fit: cover;
+	  mix-blend-mode: lighten; /* supprime le fond blanc */
+	  transform: scale(1.05);
+	}
+
+  .hex-inner {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 4.5rem; font-weight: 700;
+    color: var(--forge); opacity: 0.25;
+    letter-spacing: -0.05em;
+  }
+  .about-tag {
+    position: absolute;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem; color: #c0c4d8;
+    letter-spacing: 0.15em;
+    background: var(--steel);
+    padding: 4px 10px;
+    border: 1px solid var(--wire);
+  }
+  .tag-tl { top: 20%; left: -80px; }
+  .tag-br { bottom: 20%; right: -80px; }
+
+  /* SERVICES */
+  #services { padding: 6rem 3rem; }
+  .services-wrap { max-width: 1100px; margin: 0 auto; }
+  .services-header { margin-bottom: 3rem; }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--wire);
+    border: 1px solid var(--wire);
+  }
+  .service-card {
+    background: var(--iron);
+    padding: 2.5rem 2rem;
+    position: relative;
+    transition: background 0.2s;
+    cursor: default;
+  }
+  .service-card:hover { background: var(--steel); }
+  .service-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--forge);
+    transition: width 0.3s;
+  }
+  .service-card:hover::before { width: 100%; }
+  .service-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem; color: var(--forge);
+    letter-spacing: 0.2em; margin-bottom: 1.5rem;
+  }
+  .service-icon {
+    font-size: 1.8rem; margin-bottom: 0.8rem;
+    display: block; color: var(--forge);
+  }
+  .service-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.2rem; font-weight: 700;
+    color: var(--white); margin-bottom: 0.75rem;
+  }
+  .service-desc {
+    font-size: 0.9rem; font-weight: 300;
+    color: #c0c4d8; line-height: 1.75;
+  }
+	/* PROJETS */
+	#projets {
+	  padding: 6rem 3rem;
+	  background: var(--iron);
+	  border-top: 1px solid var(--wire);
+	}
+	.projects-grid {
+	  max-width: 1100px;
+	  margin: 0 auto;
+	  display: grid;
+	  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+	  gap: 2rem;
+	}
+	.project-card {
+	  background: var(--steel);
+	  border: 1px solid var(--wire);
+	  overflow: hidden;
+	  transition: border-color 0.3s, transform 0.3s;
+	  display: flex; flex-direction: column;
+	}
+	.project-card:hover {
+	  border-color: var(--forge);
+	  transform: translateY(-4px);
+	}
+
+	.project-visual {
+	  position: relative;
+	  overflow: hidden;
+	  background: #0a0c0f;
+	  width: 100%;
+	  /* On retire aspect-ratio et height fixe */
+	}
+
+	.project-image {
+	  width: 100%;
+	  height: auto;        /* L'image garde ses proportions */
+	  display: block;
+	  filter: brightness(0.9) contrast(1.05);
+	  transition: transform 0.4s ease, filter 0.4s ease;
+	}
+
+	.project-card:hover .project-image {
+	  transform: scale(1.05);
+	  filter: brightness(1) contrast(1.1);
+	}
+
+	.project-visual::after {
+	  content: '';
+	  position: absolute;
+	  inset: 0;
+	  background: linear-gradient(
+		180deg,
+		rgba(10, 12, 15, 0) 70%,
+		rgba(10, 12, 15, 0.4) 100%
+	  );
+	  pointer-events: none;
+	}
+
+	.project-info {
+	  padding: 1.8rem;
+	  display: flex; flex-direction: column; gap: 0.8rem;
+	  flex: 1;
+	}
+	.project-tag {
+	  font-family: 'Share Tech Mono', monospace;
+	  font-size: 0.7rem;
+	  color: var(--forge);
+	  letter-spacing: 0.2em;
+	}
+	.project-info h3 {
+	  font-family: 'Rajdhani', sans-serif;
+	  font-size: 1.3rem;
+	  font-weight: 700;
+	  color: var(--white);
+	  line-height: 1.3;
+	}
+	.project-info p {
+	  font-size: 0.92rem;
+	  font-weight: 300;
+	  color: #c0c4d8;
+	  line-height: 1.7;
+	  flex: 1;
+	}
+	.project-tools {
+	  display: flex; flex-wrap: wrap; gap: 0.5rem;
+	  margin-top: 0.5rem;
+	}
+	.tool-tag {
+	  font-family: 'Share Tech Mono', monospace;
+	  font-size: 0.7rem;
+	  color: #c0c4d8;
+	  letter-spacing: 0.08em;
+	  padding: 4px 10px;
+	  border: 1px solid var(--wire);
+	  background: var(--iron);
+	}
+
+  /* TOOLS */
+  #tools {
+    background: var(--steel);
+    border-top: 1px solid var(--wire);
+    padding: 6rem 3rem;
+  }
+  .tools-inner { max-width: 1100px; margin: 0 auto; }
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem; margin-top: 2.5rem;
+  }
+  .tool-chip {
+    border: 1px solid #3a3a50;
+    padding: 1.4rem 1.5rem;
+    background: var(--iron);
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .tool-chip:hover { border-color: var(--forge); background: #16161f; }
+  .tool-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.15rem; font-weight: 700;
+    color: var(--white);
+  }
+  .tool-type {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem; color: #a0a4bc;
+    letter-spacing: 0.08em; margin-top: 6px;
+  }
+
+  /* CONTACT */
+  .contact-section {
+    background: var(--iron);
+    border-top: 1px solid var(--wire);
+    padding: 6rem 3rem;
+  }
+  .section-header {
+    max-width: 1100px;
+    margin: 0 auto 3rem;
+    display: flex; align-items: center; gap: 1.5rem;
+  }
+  .section-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem; color: var(--forge);
+    letter-spacing: 0.2em;
+  }
+  .section-header h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700; color: var(--white);
+    letter-spacing: 0.05em;
+  }
+  .section-line {
+    flex: 1; height: 1px;
+    background: var(--wire);
+  }
+  .contact-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+  .contact-info p {
+    font-size: 1rem; font-weight: 300;
+    color: #c0c4d8; line-height: 1.8;
+    margin-bottom: 2.5rem;
+  }
+  .contact-details {
+    display: flex; flex-direction: column; gap: 1.5rem;
+  }
+  .contact-item {
+    display: flex; flex-direction: column;
+    gap: 0.3rem;
+    border-left: 2px solid var(--forge);
+    padding-left: 1rem;
+  }
+  .contact-item-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: #a0a4bc;
+    letter-spacing: 0.15em;
+  }
+  .contact-item span:last-child {
+    font-size: 0.95rem;
+    color: var(--white);
+  }
+  .contact-form {
+    display: flex; 
+	flex-direction: column; 
+	gap: 1.2rem;
+  }
+  #contact-form .form-group {
+  margin-bottom: 1.75rem;
+	}
+
+	#contact-form .form-group label {
+	  display: block;
+	  margin-bottom: 0.6rem;
+	}
+
+	#contact-form .form-group input,
+	#contact-form .form-group textarea {
+	  width: 100%;
+	  box-sizing: border-box;
+	}
+
+	#contact-form .btn-primary {
+	  margin-top: 0.5rem;
+	}
+  .form-group {
+    display: flex; flex-direction: column; gap: 0.4rem;
+  }
+  .form-group label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--forge);
+    letter-spacing: 0.15em;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    background: var(--steel);
+    border: 1px solid var(--wire);
+    color: var(--white);
+    padding: 0.8rem 1rem;
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--forge);
+  }
+  .form-group textarea {
+    resize: vertical;
+    min-height: 110px;
+  }
+  .form-group select {
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--forge) 50%),
+                      linear-gradient(135deg, var(--forge) 50%, transparent 50%);
+    background-position: calc(100% - 18px) 50%, calc(100% - 12px) 50%;
+    background-size: 6px 6px;
+    background-repeat: no-repeat;
+    padding-right: 2rem;
+  }
+  .contact-form .btn-primary {
+    margin-top: 0.5rem;
+    align-self: flex-start;
+    cursor: pointer;
+  }
+  
+	.form-status {
+	  margin-top: 1rem;
+	  padding: 1rem;
+	  font-family: 'Share Tech Mono', monospace;
+	  font-size: 0.85rem;
+	  letter-spacing: 0.05em;
+	  display: none;
+	  border-left: 3px solid;
+	}
+	.form-status.success {
+	  display: block;
+	  color: #4ade80;
+	  background: rgba(74, 222, 128, 0.08);
+	  border-color: #4ade80;
+	}
+	.form-status.error {
+	  display: block;
+	  color: var(--forge);
+	  background: rgba(224, 92, 58, 0.08);
+	  border-color: var(--forge);
+	}
+
+  @media (max-width: 768px) {
+    .contact-grid, .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .hero-corner { display: none; }
+    nav { padding: 1rem 1.5rem; }
+    nav ul { display: none; }
+    #hero, #about, #services, #tools, .contact-section { padding-left: 1.5rem; padding-right: 1.5rem; }
+  }
+
+  footer {
+    background: var(--steel);
+    border-top: 1px solid var(--wire);
+    padding: 2rem 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-logo {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem; font-weight: 700;
+    color: #a0a4bc;
+  }
+  .footer-logo span { color: var(--forge); }
+  .footer-copy {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem; color: #5a5a70;
+    letter-spacing: 0.1em;
+  }
